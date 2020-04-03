@@ -10,12 +10,12 @@ before_install:
 
 install:
 - sudo apt-get install -qq g++-9 build-essential qt5-default
-- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 90
+- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90
 
 
 before_script:
 - git submodule update --init --recursive
-- export CC=gcc-8 CXX=g++-8 LINK=g++-8
+- export CC=gcc-9 CXX=g++-9 LINK=g++-9
 - qmake -v && qmake
 
 
