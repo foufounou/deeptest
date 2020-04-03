@@ -17,6 +17,7 @@ before_script:
 - git submodule update --init --recursive
 - export CC=clang-8 CXX=clang++-8 LINK=clang++-8 CC_FOR_BUILD=clang-8 CXX_FOR_BUILD=clang++-8
 - qmake -v && qmake QMAKE_LINK=clang++-8 CXX=clang++-8 CC=clang-8
+- clang++ --version
 - cat Makefile
 
 
