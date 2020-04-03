@@ -15,6 +15,7 @@ install:
 
 before_script:
 - git submodule update --init --recursive
+- export CC=gcc-8 CXX=g++-8 LINK=g++-8
 - qmake -v && qmake
 
 
