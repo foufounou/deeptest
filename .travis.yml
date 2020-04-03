@@ -25,8 +25,8 @@ script:
 - wget -c https://github.com/probonopd/linuxdeployqt/releases/download/5/linuxdeployqt-5-x86_64.AppImage
 - chmod +x linuxdeployqt-*.AppImage
 - ./linuxdeployqt-*.AppImage ./appdir/DeepTags -bundle-non-qt-libs -appimage
-- mv DeepTags-*.AppImage DeepTags-x86_64.AppImage && mv DeepTags-*.AppImage.zsync DeepTags-x86_64.AppImage.zsync
-- tree .
+#- mv DeepTags-*.AppImage DeepTags-x86_64.AppImage && mv DeepTags-*.AppImage.zsync DeepTags-x86_64.AppImage.zsync
+- ls -l
 
 
 deploy:
