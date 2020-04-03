@@ -9,7 +9,7 @@ TARGET = DeepTags
 TEMPLATE = app
 CONFIG += c++17 -pthread
 msvc:QMAKE_CXXFLAGS += /std:c++17
-
+QMAKE_CXX = clang++
 RESOURCES += DeepTags.qrc
 TRANSLATIONS = locale/deeptags_fr.ts
 RC_ICONS = ./images/DeepTags.ico
