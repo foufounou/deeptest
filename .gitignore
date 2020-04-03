@@ -1,0 +1,8 @@
+DeepTags.pro.*
+Makefile
+!tests/Makefile
+tests/test
+tests/*.o
+.qmake.stash
+build/
+ui_qplaintexteditsearchwidget.h
