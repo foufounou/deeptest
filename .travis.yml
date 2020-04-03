@@ -9,7 +9,7 @@ before_install:
 - sudo apt-get update -qq
 
 install:
-- sudo apt-get install -qq g++-8 build-essential qt5-default
+- sudo apt-get install -qq g++-9 build-essential qt5-default
 - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 90
 
 
