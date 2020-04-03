@@ -1,7 +1,7 @@
 language: cpp
 compiler: gcc
 os: linux
-dist: trusty
+dist: bionic
 
 before_install:
 - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
@@ -9,26 +9,22 @@ before_install:
 - sudo apt-get update -qq
 
 install:
-- sudo apt-get install -qq g++-8 qt510-meta-minimal software-properties-common checkinstall xvfb dh-make fakeroot gpgv2 tree
+- sudo apt-get install -qq g++-8 qt510-meta-minimal software-properties-common checkinstall xvfb dh-make fakeroot gpgv2 tree qt-default
 - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 90
-- source /opt/qt5*/bin/qt5*-env.sh
+
 
 before_script:
 - git submodule update --init --recursive
-- /opt/qt5*/bin/qmake
+- qmake -v && qmake
+
 
 script:
 - make -j$(nproc)
-- unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
-#- mkdir -p appdir/usr/bin
 - mkdir appdir && cp -t appdir DeepTags.png DeepTags.desktop build/release/DeepTags
 - wget -c https://github.com/probonopd/linuxdeployqt/releases/download/5/linuxdeployqt-5-x86_64.AppImage
 - chmod +x linuxdeployqt-*.AppImage
 - ./linuxdeployqt-*.AppImage ./appdir/DeepTags -bundle-non-qt-libs -appimage
 #- mv DeepTags-*.AppImage DeepTags-x86_64.AppImage && mv DeepTags-*.AppImage.zsync DeepTags-x86_64.AppImage.zsync
-- chmod +x DeepTags-*.AppImage && export DISPLAY=:0
-- timeout 10s ./build/release/DeepTags
-- timeout 10s ./DeepTags-*.AppImage
 - ls -l
 
 
@@ -41,6 +37,7 @@ deploy:
   token: $GITHUB_TOKEN
   file_glob: true
   file: 
+    - build/release/DeepTags
     - DeepTags*.AppImage
     - DeepTags*.AppImage.zsync
   on:
@@ -48,4 +45,59 @@ deploy:
     tags: false
 
 
-    
+
+
+
+
+
+
+
+
+#language: cpp
+#compiler: gcc
+#os: linux
+#dist: trusty
+
+#before_install:
+#- sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+#- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty
+#- sudo apt-get update -qq
+
+#install:
+#- sudo apt-get install -qq g++-8 qt510-meta-minimal software-properties-common checkinstall xvfb dh-make fakeroot gpgv2 tree
+#- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 90
+#- source /opt/qt5*/bin/qt5*-env.sh
+
+#before_script:
+#- git submodule update --init --recursive
+#- /opt/qt5*/bin/qmake
+
+
+#script:
+#- make -j$(nproc)
+#- unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
+#- mkdir appdir && cp -t appdir DeepTags.png DeepTags.desktop build/release/DeepTags
+#- wget -c https://github.com/probonopd/linuxdeployqt/releases/download/5/linuxdeployqt-5-x86_64.AppImage
+#- chmod +x linuxdeployqt-*.AppImage
+#- ./linuxdeployqt-*.AppImage ./appdir/DeepTags -bundle-non-qt-libs -appimage
+#- mv DeepTags-*.AppImage DeepTags-x86_64.AppImage && mv DeepTags-*.AppImage.zsync DeepTags-x86_64.AppImage.zsync
+#- ls -l
+
+
+#deploy:
+  #provider: releases
+  #draft: true
+  #edge: true
+  ##skip_cleanup: true
+  #cleanup: false
+  #token: $GITHUB_TOKEN
+  #file_glob: true
+  #file: 
+    #- DeepTags*.AppImage
+    #- DeepTags*.AppImage.zsync
+  #on:
+    #repo: foufounou/deeptest
+    #tags: false
+
+
+
