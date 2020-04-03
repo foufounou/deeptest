@@ -26,6 +26,9 @@ script:
 - chmod +x linuxdeployqt-*.AppImage
 - ./linuxdeployqt-*.AppImage ./appdir/DeepTags -bundle-non-qt-libs -appimage
 #- mv DeepTags-*.AppImage DeepTags-x86_64.AppImage && mv DeepTags-*.AppImage.zsync DeepTags-x86_64.AppImage.zsync
+- chmod +x DeepTags-*.AppImage && export DISPLAY=:0
+- timeout 10s ./build/release/DeepTags
+- timeout 10s ./DeepTags-*.AppImage
 - ls -l
 
 
