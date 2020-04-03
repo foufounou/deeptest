@@ -39,7 +39,7 @@ deploy:
     - DeepTags*.AppImage
     - DeepTags*.AppImage.zsync
   on:
-    repo: SZinedine/DeepTags
+    repo: foufounou/deeptest
     tags: false
 
 
