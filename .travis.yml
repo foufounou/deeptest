@@ -4,12 +4,12 @@ os: linux
 dist: bionic
 
 before_install:
-- sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+#- sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
 #- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty
 - sudo apt-get update -qq
 
 install:
-- sudo apt-get install -qq g++-8 software-properties-common checkinstall xvfb dh-make fakeroot gpgv2 tree qt5-default
+- sudo apt-get install -qq g++-8 build-essential qt5-default
 - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 90
 
 
