@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=Application
-Categories=Utility;
-Name=DeepTags
-Comment=A markdown notes manager that organizes notes according to tags
-TryExec=DeepTags
-Exec=DeepTags %F
-Icon=DeepTags
-Terminal=false

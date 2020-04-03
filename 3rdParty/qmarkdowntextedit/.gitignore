@@ -1,8 +1,0 @@
-*.o
-*.log
-*.dSYM
-*.plist
-*.pro.user
-.directory
-build-*
-.idea
