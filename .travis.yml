@@ -22,7 +22,7 @@ before_script:
 script:
 - make -j$(nproc)
 - cd packaging/
-- wget -c https://github.com/probonopd/linuxdeployqt/releases/download/6/linuxdeployqt-6-x86_64.AppImage
+- wget -c https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
 - chmod +x linuxdeployqt-*.AppImage
 - ./appimage.sh
 #- mv DeepTags-*.AppImage DeepTags-x86_64.AppImage && mv DeepTags-*.AppImage.zsync DeepTags-x86_64.AppImage.zsync
