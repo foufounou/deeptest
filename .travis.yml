@@ -9,7 +9,7 @@ before_install:
 - sudo apt-get update -qq
 
 install:
-- sudo apt-get install -qq g++-9 software-properties-common checkinstall xvfb dh-make fakeroot gpgv2 tree qt-default
+- sudo apt-get install -qq g++-9 software-properties-common checkinstall xvfb dh-make fakeroot gpgv2 tree qt5-default
 - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90
 
 
