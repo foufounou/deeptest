@@ -27,6 +27,7 @@ script:
 - ./appimage.sh
 #- mv DeepTags-*.AppImage DeepTags-x86_64.AppImage && mv DeepTags-*.AppImage.zsync DeepTags-x86_64.AppImage.zsync
 - ls -l
+- cd ..
 
 
 deploy:
@@ -40,6 +41,7 @@ deploy:
   file: 
     - build/release/DeepTags
     - packaging/DeepTags*.AppImage
+    - DeepTags*.AppImage
     #- DeepTags*.AppImage.zsync
   on:
     repo: foufounou/deeptest
