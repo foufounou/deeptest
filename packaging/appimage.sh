@@ -28,6 +28,7 @@ if [ ! -f "$_APP_BIN" ]; then
 fi
 
 mkdir -p $_APPIMAGE_DIR/usr/bin
+mkdir -p $_APPIMAGE_DIR/usr/lib
 mkdir -p $_APPIMAGE_DIR/usr/translations
 mkdir -p $_APPIMAGE_DIR/usr/share/applications
 mkdir -p $_APPIMAGE_DIR/usr/share/icons/hicolor/256x256/apps/
@@ -39,6 +40,7 @@ cp $_DESKTOP_FILE $_APPIMAGE_DIR/
 cp $_ICON_FILE $_APPIMAGE_DIR/
 cp $_TRANSLATIONS $_APPIMAGE_DIR/usr/translations/
 cp $_APP_BIN $_APPIMAGE_DIR/usr/bin
+cp /usr/lib/x86_64-linux-gnu/libstdc++.so* mkdir -p $_APPIMAGE_DIR/usr/lib/
 
 echo "creaeting the appimage"
 $_LINUXDEPLOYQT $_APPIMAGE_DIR/usr/bin/$_APP_NAME -appimage -bundle-non-qt-libs

@@ -39,11 +39,9 @@ deploy:
   cleanup: false
   token: $GITHUB_TOKEN
   file_glob: true
-  file: 
-    - build/release/DeepTags
+  file:
     - packaging/DeepTags*.AppImage
-    - DeepTags*.AppImage
-    #- DeepTags*.AppImage.zsync
+    - packaging/DeepTags*.AppImage.zsync
   on:
     repo: foufounou/deeptest
     tags: false
