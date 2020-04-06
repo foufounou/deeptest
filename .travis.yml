@@ -5,13 +5,12 @@ dist: xenial
 
 before_install:
 - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
-#- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty
-- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.12.0-xenial
+- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty
 - sudo apt-get update -qq
 
 install:
 #- sudo apt-get install -qq g++-9 software-properties-common checkinstall xvfb dh-make fakeroot gpgv2 tree qt5-default
-- sudo apt-get install -qq g++-9 software-properties-common checkinstall xvfb dh-make fakeroot gpgv2 tree qt512-meta-minimal libgl1-mesa-dev #qt510-meta-minimal
+- sudo apt-get install -qq g++-9 software-properties-common checkinstall xvfb dh-make fakeroot gpgv2 tree qt510-meta-minimal libgl1-mesa-dev
 - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90
 - source /opt/qt5*/bin/qt5*-env.sh
 
@@ -28,7 +27,6 @@ script:
 - wget -c https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
 - chmod +x linuxdeployqt-*.AppImage
 - ./appimage.sh
-#- mv DeepTags-*.AppImage DeepTags-x86_64.AppImage && mv DeepTags-*.AppImage.zsync DeepTags-x86_64.AppImage.zsync
 - ls -l
 - cd ..
 
@@ -49,6 +47,65 @@ deploy:
   on:
     repo: foufounou/deeptest
     tags: false
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+# working for xenial : deplots the appimage
+#language: cpp
+#compiler: gcc
+#os: linux
+#dist: xenial
+
+#before_install:
+#- sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+#- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.12.0-xenial
+#- sudo apt-get update -qq
+
+#install:
+#- sudo apt-get install -qq g++-9 software-properties-common checkinstall xvfb dh-make fakeroot gpgv2 tree qt512-meta-minimal libgl1-mesa-dev
+#- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90
+#- source /opt/qt5*/bin/qt5*-env.sh
+
+
+#before_script:
+#- git submodule update --init --recursive
+#- qmake -v
+#- qmake
+
+
+#script:
+#- make -j$(nproc)
+#- cd packaging/
+#- wget -c https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+#- chmod +x linuxdeployqt-*.AppImage
+#- ./appimage.sh
+#- ls -l
+#- cd ..
+
+
+#deploy:
+  #provider: releases
+  #draft: true
+  #edge: true
+  #cleanup: false
+  #token: $GITHUB_TOKEN
+  #file_glob: true
+  #file: 
+    #- packaging/DeepTags*.AppImage
+    #- DeepTags*.AppImage
+  #on:
+    #repo: foufounou/deeptest
+    #tags: false
 
 
 
