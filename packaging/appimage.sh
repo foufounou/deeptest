@@ -47,8 +47,7 @@ cp $_ICON_FILE      $_APPIMAGE_DIR/
 cp $_TRANSLATIONS   $_APPIMAGE_DIR/usr/translations/
 cp $_APP_BIN        $_APPIMAGE_DIR/usr/bin
 
-_VERSION=$(./$_APP_BIN -v)
-export VERSION=$_VERSION
+export VERSION=$($_APP_BIN -v)
 
 # if --add-libstdc++ is provided, bundle libstdc++.so.x 
 if [ "$*" == "--add-libstdc++" ]; then
