@@ -2,6 +2,8 @@
 #include <QLibraryInfo>
 #include <QTranslator>
 #include "gui/mainwindow.h"
+#include <iostream>
+#include <cstring>
 
 #define VERSION "0.5"
 #define NAME    "DeepTags"
@@ -15,6 +17,11 @@
 #endif
 
 int main(int argc, char* argv[]) {
+    if (argc > 1)
+        if (std::strcmp(argv[1], "-v") || std::strcmp(argv[1], "--version") ){
+            std::cout << VERSION << std::endl;
+            return 0;
+        }
     _QAPP app(argc, argv);
     app.setApplicationName(NAME);
     app.setApplicationVersion(VERSION);
