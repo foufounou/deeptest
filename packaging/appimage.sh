@@ -2,8 +2,10 @@
 
 _APP_VERSION=0.5
 _APP_NAME=DeepTags
-_PKG_DIR=$(realpath $(dirname $0))
-_ROOT=$(realpath $_PKG_DIR/..)
+# _PKG_DIR=$(realpath $(dirname $0))
+# _ROOT=$(realpath $_PKG_DIR/..)
+_PKG_DIR=$(readlink -f $(dirname $0))
+_ROOT=$(readlink -f $_PKG_DIR/..)
 _DESKTOP_FILE=$_ROOT/$_APP_NAME.desktop
 _ICON_FILE=$_ROOT/$_APP_NAME.png
 _TRANSLATIONS=$_ROOT/locale/*.qm
