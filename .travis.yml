@@ -1,15 +1,17 @@
 language: cpp
 compiler: gcc
 os: linux
-dist: bionic
+dist: xenial
 
 before_install:
 - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
 #- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty
+- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-xenial
 - sudo apt-get update -qq
 
 install:
-- sudo apt-get install -qq g++-9 software-properties-common checkinstall xvfb dh-make fakeroot gpgv2 tree qt5-default
+#- sudo apt-get install -qq g++-9 software-properties-common checkinstall xvfb dh-make fakeroot gpgv2 tree qt5-default
+- sudo apt-get install -qq g++-9 software-properties-common checkinstall xvfb dh-make fakeroot gpgv2 tree qt510-meta-minimal
 - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90
 
 
