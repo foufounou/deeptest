@@ -1,17 +1,19 @@
 #!/bin/bash
 
-_APP_VERSION=0.5
 _APP_NAME=DeepTags
 _PKG_DIR=$(readlink -f $(dirname $0))
 _ROOT=$(readlink -f $_PKG_DIR/..)
-_DESKTOP_FILE=$_ROOT/$_APP_NAME.desktop
-_ICON_FILE=$_ROOT/$_APP_NAME.png
-_ICON_DIR=$_ROOT/images/icons
-_TRANSLATIONS=$_ROOT/locale/*.qm
 _APP_BIN=$_ROOT/build/release/$_APP_NAME
+_RC_DIR=$_PKG_DIR/resources
+_DESKTOP_FILE=$_RC_DIR/$_APP_NAME.desktop
+_ICON_FILE=$_ROOT/$_APP_NAME.png
+_ICON_DIR=$_RC_DIR/icons
+_TRANSLATIONS=$_ROOT/locale/*.qm
+_APP_VERSION=$($_APP_BIN --version)
 _APPIMAGE_DIR=$_PKG_DIR/deeptags_"$_APP_VERSION"
 _OUPUT="$_APPIMAGE_DIR"-86_x64.AppImage
 _LINUXDEPLOYQT="$_PKG_DIR"/linuxdeployqt-*-x86_64.AppImage
+export VERSION=$_APP_VERSION    # used by linuxdeployqt
 
 rm -rf $_APPIMAGE_DIR
 
@@ -34,10 +36,12 @@ if [ ! -f $_LINUXDEPLOYQT ]; then
     chmod +x $_LINUXDEPLOYQT
 fi
 
+
 echo "creating the directory structure"
 mkdir -p $_APPIMAGE_DIR/usr/bin
 mkdir -p $_APPIMAGE_DIR/usr/translations
 mkdir -p $_APPIMAGE_DIR/usr/share/applications
+
 
 echo "copying necessary files"
 cp $_DESKTOP_FILE   $_APPIMAGE_DIR/
@@ -47,7 +51,6 @@ cp $_ICON_FILE      $_APPIMAGE_DIR/
 cp $_TRANSLATIONS   $_APPIMAGE_DIR/usr/translations/
 cp $_APP_BIN        $_APPIMAGE_DIR/usr/bin
 
-export VERSION=$($_APP_BIN -v)
 
 # if --add-libstdc++ is provided, bundle libstdc++.so.x 
 if [ "$*" == "--add-libstdc++" ]; then
@@ -56,12 +59,14 @@ if [ "$*" == "--add-libstdc++" ]; then
     cp /usr/lib/x86_64-linux-gnu/libstdc++.so* $_APPIMAGE_DIR/usr/lib/
 fi
 
+
 echo "creating the appimage"
 RESULT=$($_LINUXDEPLOYQT $_APPIMAGE_DIR/usr/bin/$_APP_NAME -appimage -bundle-non-qt-libs)
 
 if [ $? != 0 ]; then
     >&2 echo "ERROR. LinuxDeployQt failed."
 fi
+
 
 echo "deleting temporary files"
 rm -rf $_APPIMAGE_DIR

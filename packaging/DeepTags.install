@@ -1,0 +1,14 @@
+post_install() {
+    ln -s /opt/DeepTags/bin/DeepTags /usr/bin/DeepTags
+} 
+
+post_remove() {
+	rm -f /usr/bin/DeepTags
+}
+post_install() {
+    ln -s /opt/DeepTags/bin/DeepTags /usr/bin/DeepTags
+} 
+
+post_remove() {
+	rm -f /usr/bin/DeepTags
+}

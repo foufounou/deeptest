@@ -1,0 +1,29 @@
+# Maintainer: Zineddine SAIBI <saibi.zineddine@yahoo.com>
+pkgname=DeepTags
+pkgver=0.4.2
+pkgrel=1
+pkgdesc="A Markdown notes manager"
+arch=('x86_64')
+url="https://github.com/SZinedine/DeepTags"
+license=('GPL')
+depends=('qt5-base>=5.6')
+makedepends=('git' 'wget' 'gcc' 'make')
+source=("::git+https://github.com/SZinedine/DeepTags.git#tag=")
+md5sums=('SKIP')
+install=DeepTags.install
+
+build() {
+    cd "$pkgname"
+    qmake
+    make
+}
+
+package() {
+    mkdir -p "$pkgdir/opt/$pkgname"
+    install -Dm 644 "$pkgname/$pkgname.desktop" "${pkgdir}/usr/share/applications/$pkgname.desktop"
+    install -Dm 644 "$pkgname/$pkgname.png" "$pkgdir/usr/share/icons/hicolor/$pkgname.png"
+    install -Dm 644 "$pkgname/$pkgname.png" "$pkgdir/usr/share/icons/hicolor/256x256/apps/$pkgname.png"
+    cd "$pkgname"
+    echo "installing... $pkgdir"
+    make INSTALL_ROOT="$pkgdir" install
+}
