@@ -51,7 +51,7 @@ Architecture: amd64
 Essential: no
 Priority: optional
 Section: utils
-Depends: libqt5widgets5 (>= 5.5), libqt5gui5 (>= 5.5), libqt5network5 (>= 5.5), libqt5core5a (>= 5.5), ${shlibs:Depends}, ${misc:Depends}
+Depends: libqt5widgets5 (>= 5.5), libqt5gui5 (>= 5.5), libqt5network5 (>= 5.5), libqt5core5a (>= 5.5)
 Maintainer: Zineddine SAIBI <saibi.zineddine@yahoo.com>
 Homepage: https://www.github.com/SZinedine/DeepTags
 Description: A markdown notes manager
