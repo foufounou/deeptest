@@ -30,7 +30,7 @@ install:
 
 before_script:
 - git submodule update --init --recursive
-- /usr/bin/qmake
+- qmake
 
 
 script:
@@ -52,6 +52,7 @@ deploy:
   file:
     - packaging/DeepTags*.AppImage
     - packaging/DeepTags*.AppImage.zsync
+    - packaging/deeptags_*.deb
   on:
     repo: SZinedine/DeepTags
     tags: true

@@ -34,13 +34,13 @@ echo "creating directories for packaging"
 mkdir -p $_DEB_DIR/DEBIAN
 mkdir -p $_DEB_DIR/usr/bin
 mkdir -p $_DEB_DIR/usr/share/applications
-mkdir -p $_APPIMAGE_DIR/usr/share/metainfo
+mkdir -p $_DEB_DIR/usr/share/metainfo
 
 echo "copying necessary files"
 cp $_DESKTOP_FILE   $_DEB_DIR/usr/share/applications
 cp -r $_ICON_DIR    $_DEB_DIR/usr/share/
 cp $_APP_BIN        $_DEB_DIR/usr/bin
-cp $_APPDATA_FILE   $_APPIMAGE_DIR/usr/share/metainfo/
+cp $_APPDATA_FILE   $_DEB_DIR/usr/share/metainfo/
 
 
 echo "creating control file"
@@ -64,6 +64,7 @@ dpkg-deb --build $_DEB_DIR
 
 echo "deleting temporary files"
 rm -rf $_DEB_DIR
+
 
 if [ -n "$DIST" ]; then
     echo "adding the distribution name into the output filename"
