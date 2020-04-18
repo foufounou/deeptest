@@ -65,8 +65,8 @@ dpkg-deb --build $_DEB_DIR
 echo "deleting temporary files"
 rm -rf $_DEB_DIR
 
-if [ -n "$dist" ]; then
+if [ -n "$DIST" ]; then
     echo "adding the distribution name into the output filename"
-    mv $_DEB_DIR.deb $_DEB_DIR-$dist.deb
+    mv $_DEB_DIR.deb $_DEB_DIR-$DIST.deb
 fi
 
