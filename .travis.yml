@@ -30,7 +30,7 @@ install:
 
 before_script:
 - git submodule update --init --recursive
-- qmake
+- /usr/bin/qmake
 
 
 script:
