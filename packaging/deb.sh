@@ -51,7 +51,7 @@ Architecture: amd64
 Essential: no
 Priority: optional
 Section: utils
-Depends: libqt5widgets5 (>= 5.5), libqt5gui5 (>= 5.5), libqt5network5 (>= 5.5), libqt5core5a (>= 5.5), libc6, libgcc1, libstdc++6, libx11-6, libgl1-mesa-dev
+Depends: libqt5widgets5 (>= 5.5), libqt5gui5 (>= 5.5), libqt5network5 (>= 5.5), libqt5core5a (>= 5.5), ${shlibs:Depends}, ${misc:Depends}
 Maintainer: Zineddine SAIBI <saibi.zineddine@yahoo.com>
 Homepage: https://www.github.com/SZinedine/DeepTags
 Description: A markdown notes manager
@@ -65,9 +65,8 @@ dpkg-deb --build $_DEB_DIR
 echo "deleting temporary files"
 rm -rf $_DEB_DIR
 
-
-if [ -n "$DIST" ]; then
+if [ -n "$dist" ]; then
     echo "adding the distribution name into the output filename"
-    mv $_DEB_DIR.deb $_DEB_DIR-$DIST.deb
+    mv $_DEB_DIR.deb $_DEB_DIR-$dist.deb
 fi
 
