@@ -54,5 +54,5 @@ deploy:
     - packaging/DeepTags*.AppImage.zsync
     - packaging/deeptags_*.deb
   on:
-    repo: SZinedine/DeepTags
+    repo: foufounou/deeptest
     tags: true
