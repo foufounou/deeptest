@@ -3,17 +3,27 @@ compiler: gcc
 os: linux
 dist: trusty
 
+
+jobs:
+  include:
+    - os: linux
+      dist: trusty
+    - os: linux
+      dist: xenial
+    - os: linux
+      dist: bionic
+
 before_install:
-- sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
-- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty
+- echo "building in $distro"
+- if [ $dist == trusty ]; then sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test && sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty ; fi
 - sudo apt-get update -qq
 
 
 install:
-- sudo apt-get install -qq g++-9 tree qt510-meta-minimal libgl1-mesa-dev
-- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90
-- source /opt/qt5*/bin/qt5*-env.sh
-
+- if [ $dist == trusty ]; then sudo apt-get install -qq tree qt510-meta-minimal libgl1-mesa-dev g++-9 ; fi
+- if [ $dist == trusty ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 ; fi
+- if [ $dist == trusty ]; then source /opt/qt5*/bin/qt5*-env.sh ; fi
+- if [ $dist != trusty ]; then sudo apt-get install -qq tree libgl1-mesa-dev g++ qt5-default qt5-qmake ; fi
 
 before_script:
 - git submodule update --init --recursive
@@ -23,9 +33,9 @@ before_script:
 script:
 - make -j$(nproc)
 - cd packaging/
-- wget -c https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
-- chmod +x linuxdeployqt-*.AppImage
-- ./appimage.sh --add-libstdc++
+- if [ $dist == trusty ]; then wget -c https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage ; fi
+- if [ $dist == trusty ]; then chmod +x linuxdeployqt-*.AppImage && ./appimage.sh --add-libstdc++ ; fi
+- if [ $dist != trusty ]; then ./deb.sh ; fi
 - pwd && tree . && cd ..
 
 
@@ -33,13 +43,12 @@ deploy:
   provider: releases
   draft: true
   edge: true
-  skip_cleanup: true
-  #cleanup: false
+  cleanup: false
   token: $GITHUB_TOKEN
   file_glob: true
   file:
     - packaging/DeepTags*.AppImage
     - packaging/DeepTags*.AppImage.zsync
   on:
-    repo: foufounou/deeptest
+    repo: SZinedine/DeepTags
     tags: true

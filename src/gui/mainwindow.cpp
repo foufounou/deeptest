@@ -20,6 +20,7 @@
 #include <QStatusBar>
 #include <QSystemTrayIcon>
 #include <QVBoxLayout>
+#include <memory>
 #include "../element/element.h"
 #include "elementdialog.h"
 #include "readersdialog.h"
@@ -38,7 +39,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     Settings::loadTheme(themesActionGroup);
 #endif
 #ifdef INSIDE_EDITOR
-    editorWidgetAction->setChecked(Settings::loadUseEditor());
+    if (Settings::containsUseEditor())
+        editorWidgetAction->setChecked(Settings::loadUseEditor());
+    else
+        editorWidgetAction->setChecked(true);
+    editorWidget->setVisible(editorWidgetAction->isChecked());
 #endif
     emit started();
 }
@@ -115,7 +120,7 @@ void MainWindow::setupMenu() {
     newFileAction           = new QAction(QIcon(":images/newFile.png"), tr("&New File"), this);
     recentlyOpenedFilesMenu = new QMenu(tr("&Recently Opened Files"), this);
     Settings::getActionsRecentlyOpenedFiles(recentlyOpenedFilesMenu);
-    changeDataDirAction = new QAction(tr("&Change Data Directory"), this);
+    changeDataDirAction = new QAction(tr("&Set/Change Data Directory"), this);
     openDataDirAction   = new QAction(tr("Open Data Directory"), this);
     quitAction          = new QAction(QIcon(":images/quit.png"), tr("&Quit"), this);
     menuFile->addAction(newFileAction);
@@ -126,7 +131,7 @@ void MainWindow::setupMenu() {
     menuFile->addAction(quitAction);
 
     auto menuEdit     = menuBar()->addMenu(tr("&Edit"));
-    setMdReaderAction = new QAction(tr("&Set MarkDown Reader"), this);
+    setMdReaderAction = new QAction(tr("&MarkDown Readers"), this);
 #ifdef INCLUDE_QBREEZE   // use QBreeze if it exists
     auto setStyleMenu = new QMenu(tr("Themes"), menuEdit);
     themesActionGroup = new QActionGroup(this);
@@ -150,7 +155,7 @@ void MainWindow::setupMenu() {
     menuEdit->addActions({ setMdReaderAction, clearElementsAction, reloadElementsAction });
 
 #ifdef INSIDE_EDITOR
-    editorWidgetAction = new QAction("Activate Integrated Reader (experimental)", menuEdit);
+    editorWidgetAction = new QAction("Show Integrated Reader", menuEdit);
     editorWidgetAction->setCheckable(true);
     editorWidgetAction->setChecked(false);
     menuEdit->addAction(editorWidgetAction);
@@ -206,8 +211,12 @@ void MainWindow::setupSignals() {
     connect(setMdReaderAction, &QAction::triggered, this,
             [=] { std::make_unique<ReadersDialog>(this); });
     connect(changeDataDirAction, &QAction::triggered, this, &MainWindow::changeDataDirectory);
-    connect(openDataDirAction, &QAction::triggered, this,
-            [=] { QDesktopServices::openUrl(QUrl(Settings::dataDirectory())); });
+    connect(openDataDirAction, &QAction::triggered, this, [=] {
+        if (Settings::dataDirectoryIsSet())
+            QDesktopServices::openUrl(QUrl(Settings::dataDirectory()));
+        else
+            QMessageBox::warning(this, "No data directory", "Data directory hasn't been set.");
+    });
     connect(aboutAction, &QAction::triggered, this, &MainWindow::about);
     connect(this, &MainWindow::started, this, &MainWindow::load,
             Qt::ConnectionType(Qt::QueuedConnection | Qt::UniqueConnection));
@@ -235,6 +244,7 @@ void MainWindow::setupSignals() {
     connect(filesContainer, &FilesContainer::elementChanged, editorWidget, &EditorWidget::reload);
     connect(editorWidgetAction, &QAction::toggled, this, [=] {
         bool checked = editorWidgetAction->isChecked();
+        editorWidget->setVisible(checked);
         Settings::saveUseEditor(checked);
         if (checked)
             connect(filesContainer, &FilesContainer::selectionChanged_, editorWidget,
@@ -250,12 +260,21 @@ void MainWindow::setupSignals() {
 
 
 void MainWindow::setupKeyboard() {
-    auto srch = new QShortcut(QKeySequence("Ctrl+f"), this);
-    connect(srch, &QShortcut::activated, this, [=] { searchLineEdit->setFocus(); });
+    new QShortcut(QKeySequence("Ctrl+f"), searchLineEdit, SLOT(setFocus()));
+    new QShortcut(QKeySequence("Ctrl+p"), filesContainer, SLOT(pinSelected()));
+    new QShortcut(QKeySequence("Ctrl+s"), filesContainer, SLOT(starSelected()));
+    new QShortcut(QKeySequence("Ctrl+r"), filesContainer, SLOT(restoreSelected()));
+    new QShortcut(QKeySequence(QKeySequence::Delete), filesContainer, SLOT(trashSelected()));
+    new QShortcut(QKeySequence(QKeySequence(Qt::Key_Shift + Qt::Key_Delete)), filesContainer,
+                  SLOT(permanentlyDeleteSelected()));
     newFileAction->setShortcut(QKeySequence("Ctrl+n"));
     quitAction->setShortcut(QKeySequence("Ctrl+q"));
     // clearElementsAction->setShortcut(QKeySequence("Ctrl+Shift+c"));
     // reloadElementsAction->setShortcut(QKeySequence("Ctrl+Shift+r"));
+    auto edel = new QShortcut(QKeySequence("Ctrl+e"), this);
+    connect(edel, &QShortcut::activated, this, [=] {
+        if (filesContainer->hasFocus()) filesContainer->editElement(filesContainer->currentItem());
+    });
     auto ret = new QShortcut(QKeySequence("Return"), this);
     connect(ret, &QShortcut::activated, this, [=] {
         if (tagsContainer->hasFocus())
@@ -265,21 +284,6 @@ void MainWindow::setupKeyboard() {
         else if (searchLineEdit->hasFocus())
             search();
     });
-    auto edel = new QShortcut(QKeySequence("Ctrl+e"), this);
-    connect(edel, &QShortcut::activated, this, [=] {
-        if (filesContainer->hasFocus()) filesContainer->editElement(filesContainer->currentItem());
-    });
-    auto p = new QShortcut(QKeySequence("Ctrl+p"), this);
-    connect(p, &QShortcut::activated, filesContainer, &FilesContainer::pinSelected);
-    auto s = new QShortcut(QKeySequence("Ctrl+s"), this);
-    connect(s, &QShortcut::activated, filesContainer, &FilesContainer::starSelected);
-    auto supr = new QShortcut(QKeySequence(QKeySequence::Delete), this);
-    connect(supr, &QShortcut::activated, filesContainer, &FilesContainer::trashSelected);
-    auto permDel = new QShortcut(QKeySequence(QKeySequence(Qt::Key_Shift + Qt::Key_Delete)), this);
-    connect(permDel, &QShortcut::activated, filesContainer,
-            &FilesContainer::permanentlyDeleteSelected);
-    auto r = new QShortcut(QKeySequence("Ctrl+r"), this);
-    connect(r, &QShortcut::activated, filesContainer, &FilesContainer::restoreSelected);
 }
 
 
@@ -297,7 +301,7 @@ void MainWindow::disableSomeWidgets(const bool& disable) {
 
 void MainWindow::load() {
     qApp->processEvents();
-    if (!Settings::dataDirectoryIsSet() || !fs::exists(Settings::dataDirectory().toStdString())) {
+    if (!Settings::dataDirectoryIsSet() || !QFile::exists(Settings::dataDirectory())) {
         auto ask = QMessageBox::information(this, tr("Set a Data Directory"),
                                             tr("The Data directory isn't set, Please set it."),
                                             QMessageBox::Ok | QMessageBox::Cancel);
@@ -310,6 +314,9 @@ void MainWindow::load() {
 
 
 void MainWindow::reloadContent() {
+#ifdef INSIDE_EDITOR
+    editorWidget->clear();
+#endif
     tagsContainer->init();
     filesContainer->clearView();
     loadDataDirectoryContent();
@@ -317,7 +324,7 @@ void MainWindow::reloadContent() {
 
 
 void MainWindow::loadDataDirectoryContent() {
-    const PathsList paths       = be::fetch_files(Settings::dataDirectory().toStdString());
+    const PathsList paths       = be::fetch_files(Settings::dataDirectory());
     const ElementsList elements = Element::constructElementList(paths);
     if (!elements.empty()) openElements(elements);
 }
@@ -360,7 +367,7 @@ void MainWindow::search() {
     };
 
     for (Element* e : *lst)
-        if (contains(QString(e->title().c_str()).simplified().toLower())) res->push_back(e);
+        if (contains(e->title().simplified().toLower())) res->push_back(e);
 
     filesContainer->addFiles(res.get());
 }

@@ -1,20 +1,17 @@
 #include <QFileSystemWatcher>
 #include <QToolBar>
-#include <filesystem>
 #include "./../../3rdParty/qmarkdowntextedit/qmarkdowntextedit.h"
-
-namespace fs = std::filesystem;
 
 class EditorWidget : public QWidget {
     Q_OBJECT
 public:
     EditorWidget(QWidget* parent = nullptr);
 
-public slots:
     void open(QString path);
-    void save();
+    void display(QString path);
     void closeFile();
     void reload();
+    inline void clear() { m_editor->clear(); }
 
 signals:
     void openedFile(QString file);

@@ -1,12 +1,14 @@
 #!/bin/bash
 
 _APP_NAME=DeepTags
+_APP_BIN_NAME=deeptags
 _PKG_DIR=$(readlink -f $(dirname $0))
 _ROOT=$(readlink -f $_PKG_DIR/..)
-_APP_BIN=$_ROOT/build/release/$_APP_NAME
+_APP_BIN=$_ROOT/$_APP_BIN_NAME
 _RC_DIR=$_PKG_DIR/resources
-_DESKTOP_FILE=$_RC_DIR/$_APP_NAME.desktop
-_ICON_FILE=$_ROOT/$_APP_NAME.png
+_DESKTOP_FILE=$_RC_DIR/$_APP_BIN_NAME.desktop
+_APPDATA_FILE=$_RC_DIR/$_APP_BIN_NAME.appdata.xml
+_ICON_FILE=$_ROOT/$_APP_BIN_NAME.png
 _ICON_DIR=$_RC_DIR/icons
 _TRANSLATIONS=$_ROOT/locale/*.qm
 _APP_VERSION=$($_APP_BIN --version)
@@ -32,26 +34,27 @@ echo "creating directories for packaging"
 mkdir -p $_DEB_DIR/DEBIAN
 mkdir -p $_DEB_DIR/usr/bin
 mkdir -p $_DEB_DIR/usr/share/applications
-
+mkdir -p $_APPIMAGE_DIR/usr/share/metainfo
 
 echo "copying necessary files"
 cp $_DESKTOP_FILE   $_DEB_DIR/usr/share/applications
 cp -r $_ICON_DIR    $_DEB_DIR/usr/share/
 cp $_APP_BIN        $_DEB_DIR/usr/bin
+cp $_APPDATA_FILE   $_APPIMAGE_DIR/usr/share/metainfo/
 
 
 echo "creating control file"
 cat >> $_DEB_DIR/DEBIAN/control <<EOL
-Package: $_APP_NAME
+Package: $_APP_BIN_NAME
 Version: $_APP_VERSION
 Architecture: amd64
 Essential: no
 Priority: optional
 Section: utils
-Depends: libqt5widgets5 (>= 5.6), libqt5gui5 (>= 5.6), libqt5network5 (>= 5.6), libqt5core5a (>= 5.6), libc6, libgcc1, libstdc++6, libx11-6, libgl1-mesa-dev
+Depends: libqt5widgets5 (>= 5.5), libqt5gui5 (>= 5.5), libqt5network5 (>= 5.5), libqt5core5a (>= 5.5), libc6, libgcc1, libstdc++6, libx11-6, libgl1-mesa-dev
 Maintainer: Zineddine SAIBI <saibi.zineddine@yahoo.com>
 Homepage: https://www.github.com/SZinedine/DeepTags
-Description: A Markdown notes manager
+Description: A markdown notes manager
 EOL
 
 
@@ -61,3 +64,9 @@ dpkg-deb --build $_DEB_DIR
 
 echo "deleting temporary files"
 rm -rf $_DEB_DIR
+
+if [ -n "$dist" ]; then
+    echo "adding the distribution name into the output filename"
+    mv $_DEB_DIR.deb $_DEB_DIR-$dist.deb
+fi
+

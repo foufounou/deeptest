@@ -1,29 +1,37 @@
 # Maintainer: Zineddine SAIBI <saibi.zineddine@yahoo.com>
-pkgname=DeepTags
-pkgver=0.4.2
+
+pkgname=deeptags
+pkgver=0.5
 pkgrel=1
 pkgdesc="A Markdown notes manager"
 arch=('x86_64')
 url="https://github.com/SZinedine/DeepTags"
-license=('GPL')
-depends=('qt5-base>=5.6')
-makedepends=('git' 'wget' 'gcc' 'make')
-source=("::git+https://github.com/SZinedine/DeepTags.git#tag=")
+license=('GPL3')
+depends=('qt5-base' 'qt5-svg')
+makedepends=('qt5-tools' 'git' 'wget' 'gcc' 'make')
+source=("$pkgname::git+https://github.com/SZinedine/DeepTags.git#tag=$pkgver")
 md5sums=('SKIP')
-install=DeepTags.install
+install=$pkgname.install
 
 build() {
     cd "$pkgname"
-    qmake
+    git submodule update --init --recursive
+    qmake PREFIX=/usr
     make
 }
 
 package() {
-    mkdir -p "$pkgdir/opt/$pkgname"
-    install -Dm 644 "$pkgname/$pkgname.desktop" "${pkgdir}/usr/share/applications/$pkgname.desktop"
-    install -Dm 644 "$pkgname/$pkgname.png" "$pkgdir/usr/share/icons/hicolor/$pkgname.png"
-    install -Dm 644 "$pkgname/$pkgname.png" "$pkgdir/usr/share/icons/hicolor/256x256/apps/$pkgname.png"
-    cd "$pkgname"
-    echo "installing... $pkgdir"
-    make INSTALL_ROOT="$pkgdir" install
+    cd $pkgname/
+    make INSTALL_ROOT=$pkgdir install
+
+    install -Dm 644 packaging/resources/$pkgname.appdata.xml    $pkgdir/usr/share/metainfo/$pkgname.appdata.xml;
+    install -Dm 644 packaging/resources/$pkgname.desktop        $pkgdir/usr/share/applications/$pkgname.desktop
+    install -Dm 644 LICENSE                                     $pkgdir/usr/share/licenses/$pkgname/LICENSE
+
+    for icon in 16x16 32x32 48x48 64x64 80x80 96x96 128x128 192x192 256x256 384x384 512x512; do
+        install -Dm 644 packaging/resources/icons/hicolor/$icon/apps/$pkgname.png $pkgdir/usr/share/icons/hicolor/$icon/apps/$pkgname.png
+    done
+    install -Dm 644 packaging/resources/icons/hicolor/scalable/apps/$pkgname.svg $pkgdir/usr/share/icons/hicolor/scalable/apps/$pkgname.svg
+
+
 }

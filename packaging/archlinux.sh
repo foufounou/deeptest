@@ -25,7 +25,7 @@ url="https://github.com/SZinedine/DeepTags"
 license=('GPL')
 depends=('qt5-base>=5.6')
 makedepends=('git' 'wget' 'gcc' 'make')
-source=("$pkgname::git+https://github.com/SZinedine/DeepTags.git#tag=$pkgver")
+source=("\$pkgname::git+https://github.com/SZinedine/DeepTags.git#tag=\$pkgver")
 md5sums=('SKIP')
 install=DeepTags.install
 
